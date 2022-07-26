@@ -1,62 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Roboto+Condensed:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;500&display=swap');
 
 body {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'Rubik', 'Arial', sans-serif;
+    background-color: #F7C602;
 }
 
-h1 {
-    font-size: 46px;
-    font-family: 'Gochi Hand', cursive;
+#image{
+    width: 500px;
 }
 
-#country-list {
+.poke-deck {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 75%;
+}
+
+.poke-card {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+#test-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#test{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border: 2px solid black;
+    width: 250px;
+    margin: 10px 0;
+}
+
+.poke-card h2, p{
+    margin-left: 20px;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     list-style-type: none;
-    column-count: 3;
-    max-width: 1000px;
+    width: 500px;
+    height: 100px;
+    gap: 3px 20px;
+    justify-content: space-between;
     border-radius: 4px;
     border: 1px solid lightgray;
-    background-color: #FAFAFA;
+    background-color: black;
+    color: white;
     padding: 30px;
 }
 
-.world-map {
-    width: 1000px;
+.nav-button {
+    padding: 8px 8px;
+    width: 100px;
+    border: 2px solid #0c285e;
+    background-color: #165eac;
+    color: white;
+    border-radius: 2px;
+    font-family: 'Rubik', 'Arial', sans-serif;
+    outline: none;
 }
 
-.flag {
-    width: 20px;
-    margin: 0 10px 0 0;
-    display: inline-block;
+.nav-button:hover {
+    cursor: pointer;
 }
 
-.population {
-    margin: 0 0 12px 0;
-    font-size: 10px;
+.nav-button:disabled {
+    background-color: darkgray;
+    cursor: not-allowed;
 }
 
-.blue {
-    color: #5575C1;
+.nav-button + .nav-button {
+    margin-left: 8px;
 }
-
-.green {
-    color: #4C834B;
-}
-
-.red {
-    color: #D24E5B;
-}
-
-.yellow {
-    color: #FFD435;
-}
-
-.purple {
-    color: #A653BA;
-}
-
-.default {
-    color: grey;
+.button-bar {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0 0 20px 0;
 }

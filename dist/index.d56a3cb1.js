@@ -462,68 +462,106 @@ function hmrAcceptRun(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
-async function fetchCountries() {
+let result = '';
+let prevInfo = '';
+let nextInfo = '';
+// Ophalen data
+async function getAllPokemonData() {
     try {
-        const result = await _axiosDefault.default.get('https://restcountries.com/v2/all');
-        const countries = result.data;
-        // sorteer de huidige data array op de populatie-property van elk land
-        countries.sort((a, b)=>{
-            return a.population - b.population;
-        });
-        // geef de gesorteerde data array mee aan de functie die de elementen op de pagina injecteert
-        createListItems(countries);
+        result = await _axiosDefault.default.get('https://pokeapi.co/api/v2/pokemon');
+        nextInfo = result.data.next;
+        console.log(result.data);
+        const pokemons = result.data.results;
+        pokemonList(pokemons);
     } catch (e) {
         console.error(e);
     }
 }
-fetchCountries();
-function createListItems(countries) {
-    // sla de referentie op naar ons 'anker' element, de <ul> met id country-list
-    const countryList = document.getElementById('country-list');
-    // OPTIE 1
-    countryList.innerHTML = countries.map((country)=>{
+// Pokemon namen
+function pokemonList(pokemon) {
+    const container = document.getElementById('container');
+    container.innerHTML = pokemon.map((poke)=>{
         return `
-      <li>
-        <img src="${country.flag}" alt="Vlag van ${country.name}" class="flag" />
-        <span class="${getRegionClass(country.region)}">${country.name}</span>
-        <p class="population">Has a population of ${country.population} people</p>
-      </li>
-    `;
+        <li>
+            <span id="space">${poke.name}</span>
+        </li>
+        `;
     }).join('');
-// OPTIE 2 (dit had overigens ook gekunt met een for-loop!)
-// countries.map((country) => {
-//   // maak een li-element aan
-//   const countryElement = document.createElement('li');
-//
-//   // stop er een afbeelding, span en p in
-//   countryElement.innerHTML = `
-//     <img src="${country.flag}" alt="Vlag van ${country.name}" class="flag" />
-//     <span class="${getRegionClass(country.region)}">${country.name}</span>
-//     <p class="population">Has a population of ${country.population} people</p>
-//   `;
-//
-//   // voeg het list-element toe aan het ul-element
-//   countryList.appendChild(countryElement);
-// });
 }
-// deze functie wordt voor elk land opnieuw aangeroepen en krijgt dan de region mee. Op basis daarvan
-// voert de switch zijn vergelijking uit, en geeft dan de naam van de class mee die wij op het element zetten.
-function getRegionClass(currentRegion) {
-    switch(currentRegion){
-        case 'Africa':
-            return 'blue';
-        case 'Americas':
-            return 'green';
-        case 'Asia':
-            return 'red';
-        case 'Europe':
-            return 'yellow';
-        case 'Oceania':
-            return 'purple';
-        default:
-            return 'default';
+async function getPokemonData() {
+    try {
+        const response = await _axiosDefault.default.get("https://pokeapi.co/api/v2/pokemon");
+        console.log('test', response.data.results);
+        // pokemonInfo(response.data)
+        pokemonTest(response.data.results);
+    } catch (e) {
+        console.error(e);
     }
 }
+// Pokemon kaartjes
+function pokemonTest(pokemon) {
+    let card = document.getElementById('test-container');
+    pokemon.map((poke)=>{
+        async function getAllPokemon() {
+            try {
+                const result = await _axiosDefault.default.get(`${poke.url}`);
+                const pokemon = result.data;
+                card.innerHTML += `
+<div id="test">
+            <h2>${pokemon.name}</h2>
+            <img src="${pokemon.sprites.front_default}" alt="plaatje">
+            <p><strong>Moves:</strong>${pokemon.moves.length}</p>
+            <p><strong>Weight:</strong>${pokemon.weight}</p>
+            <p><strong>Abilities:</strong></p>
+            <ul>
+                ${pokemon.abilities.map((ability)=>{
+                    return `
+                    <li>
+                        ${ability.ability.name}
+                    </li>
+                    `;
+                }).join('')}
+</ul>
+</div>
+        `;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        getAllPokemon();
+    });
+}
+// Buttons
+const buttonNext = document.getElementById('button-next');
+const buttonPrev = document.getElementById('button-prev');
+buttonNext.addEventListener('click', next);
+buttonPrev.addEventListener('click', prev);
+async function next() {
+    try {
+        const info = await _axiosDefault.default.get(nextInfo);
+        const pokeInfo = info.data.results;
+        nextInfo = info.data.next;
+        prevInfo = info.data.previous;
+        pokemonList(pokeInfo);
+        pokemonTest(pokeInfo);
+    } catch (e) {
+        console.error(e);
+    }
+}
+async function prev() {
+    try {
+        const info = await _axiosDefault.default.get(prevInfo);
+        const pokeInfo = info.data.results;
+        prevInfo = info.data.previous;
+        nextInfo = info.data.next;
+        pokemonList(pokeInfo);
+        pokemonTest(pokeInfo);
+    } catch (e) {
+        console.error(e);
+    }
+}
+getPokemonData();
+getAllPokemonData();
 
 },{"axios":"1IeuP","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"1IeuP":[function(require,module,exports) {
 module.exports = require('./lib/axios');
